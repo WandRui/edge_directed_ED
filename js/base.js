@@ -128,61 +128,162 @@
         
         // no-dither, floyd-steinberg, edge-directed
         var dither_method = $("#posterization-dither-method").val();
+        var dither_threshold = $("#posterization-threshold-value").val();
 
         // Create the red, green and blue masks
         // A function makeBitMask() is already given
         var redMask   = makeBitMask(redBits);
         var greenMask = makeBitMask(greenBits);
         var blueMask  = makeBitMask(blueBits);
-
-        for (var i = 0; i < inputData.data.length; i += 4) {
-            // Apply the bitmasks onto the RGB channels
-            // The bitwise AND operator is used to apply the mask
-            // Apply bitwise AND
-            outputData.data[i] = inputData.data[i] & redMask;
-            outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
-            outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
-
-            if (dither_method != "no-dither") {
-                var R_error = inputData.data[i] - outputData.data[i];
-                var G_error = inputData.data[i + 1] - outputData.data[i + 1];
-                var B_error = inputData.data[i + 2] - outputData.data[i + 2];
-
-                if (dither_method == "floyd-steinberg") {
-                    // Diffuse error with Floyd-Steinberg dithering
-                    var pixel_index = i / 4;
-                    var pixel_x = pixel_index % inputData.width;
-                    var pixel_y = Math.floor(pixel_index / inputData.width);
-
-                    if (pixel_x < inputData.width - 1) {
-                        // diffuse to the right pixel
-                        inputData.data[i + 4]     += R_error * 7 / 16;
-                        inputData.data[i + 5]     += G_error * 7 / 16;
-                        inputData.data[i + 6]     += B_error * 7 / 16;
-                    }
-                    if (pixel_y < inputData.height - 1) {
-                        // diffuse to the bottom pixel
-                        inputData.data[i + inputData.width * 4]     += R_error * 5 / 16;
-                        inputData.data[i + inputData.width * 4 + 1] += G_error * 5 / 16;
-                        inputData.data[i + inputData.width * 4 + 2] += B_error * 5 / 16;
-                    }
-                    if (pixel_x > 0 && pixel_y < inputData.height - 1) {
-                        // diffuse to the bottom-left pixel
-                        inputData.data[i + inputData.width * 4 - 4]     += R_error * 3 / 16;
-                        inputData.data[i + inputData.width * 4 - 3]     += G_error * 3 / 16;
-                        inputData.data[i + inputData.width * 4 - 2]     += B_error * 3 / 16;
-                    }
-                    if (pixel_x < inputData.width - 1 && pixel_y < inputData.height - 1) {
-                        // diffuse to the bottom-right pixel
-                        inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 16;
-                        inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 16;
-                        inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 16;
-                    }
-                } else if (dither_method == "edge-directed") {
-                    // Diffuse error with edge-directed dithering
-                }
+        
+        if (dither_method == "no-dither") {
+            for (var i = 0; i < inputData.data.length; i += 4){
+                outputData.data[i] = inputData.data[i] & redMask;
+                outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
             }
         }
+        else{
+            var R_error, G_error, B_error;
+            var pixel_index, pixel_x, pixel_y;
+            if (dither_method == "floyd-steinberg") {
+                for (var i = 0; i < inputData.data.length; i += 4) {
+                    outputData.data[i] = inputData.data[i] & redMask;
+                    outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                    outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
+                    R_error = inputData.data[i] - outputData.data[i];
+                    G_error = inputData.data[i + 1] - outputData.data[i + 1];
+                    B_error = inputData.data[i + 2] - outputData.data[i + 2];
+                     // Diffuse error with Floyd-Steinberg dithering
+                    pixel_index = i / 4;
+                    pixel_x = pixel_index % inputData.width;
+                    pixel_y = Math.floor(pixel_index / inputData.width);
+ 
+                     if (pixel_x < inputData.width - 1) {
+                         // diffuse to the right pixel
+                         inputData.data[i + 4]     += R_error * 7 / 16;
+                         inputData.data[i + 5]     += G_error * 7 / 16;
+                         inputData.data[i + 6]     += B_error * 7 / 16;
+                     }
+                     if (pixel_y < inputData.height - 1) {
+                         // diffuse to the bottom pixel
+                         inputData.data[i + inputData.width * 4]     += R_error * 5 / 16;
+                         inputData.data[i + inputData.width * 4 + 1] += G_error * 5 / 16;
+                         inputData.data[i + inputData.width * 4 + 2] += B_error * 5 / 16;
+                     }
+                     if (pixel_x > 0 && pixel_y < inputData.height - 1) {
+                         // diffuse to the bottom-left pixel
+                         inputData.data[i + inputData.width * 4 - 4]     += R_error * 3 / 16;
+                         inputData.data[i + inputData.width * 4 - 3]     += G_error * 3 / 16;
+                         inputData.data[i + inputData.width * 4 - 2]     += B_error * 3 / 16;
+                     }
+                     if (pixel_x < inputData.width - 1 && pixel_y < inputData.height - 1) {
+                         // diffuse to the bottom-right pixel
+                         inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 16;
+                         inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 16;
+                         inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 16;
+                     }
+                }
+            }
+            else if (dither_method == "Atkinson") {
+                for (var i = 0; i < inputData.data.length; i += 4) {
+                    outputData.data[i] = inputData.data[i] & redMask;
+                    outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                    outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
+                    R_error = inputData.data[i] - outputData.data[i];
+                    G_error = inputData.data[i + 1] - outputData.data[i + 1];
+                    B_error = inputData.data[i + 2] - outputData.data[i + 2];
+                     // Diffuse error with Floyd-Steinberg dithering
+                    pixel_index = i / 4;
+                    pixel_x = pixel_index % inputData.width;
+                    pixel_y = Math.floor(pixel_index / inputData.width);
+ 
+                     if (pixel_x < inputData.width - 1) {
+                         // diffuse to the right pixel
+                         inputData.data[i + 4]     += R_error * 1 / 8;
+                         inputData.data[i + 5]     += G_error * 1 / 8;
+                         inputData.data[i + 6]     += B_error * 1 / 8;
+                     }
+                     if (pixel_x < inputData.width - 2) {
+                        // diffuse to the right-right pixel
+                        inputData.data[i + 8]     += R_error * 1 / 8;
+                        inputData.data[i + 9]     += G_error * 1 / 8;
+                        inputData.data[i + 10]     += B_error * 1 / 8;
+                    }
+                     if (pixel_y < inputData.height - 1) {
+                         // diffuse to the bottom pixel
+                         inputData.data[i + inputData.width * 4]     += R_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 + 1] += G_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 + 2] += B_error * 1 / 8;
+                     }
+                     if (pixel_x > 0 && pixel_y < inputData.height - 1) {
+                         // diffuse to the bottom-left pixel
+                         inputData.data[i + inputData.width * 4 - 4]     += R_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 - 3]     += G_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 - 2]     += B_error * 1 / 8;
+                     }
+                     if (pixel_y < inputData.height - 2) {
+                         // diffuse to the bottom-bottom pixel
+                         inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 8;
+                     }
+                }
+            }
+            else if (dither_method == "edge-directed") {
+                var sobel_edge = imageproc.createBuffer(inputData);
+                imageproc.sobelEdge(inputData, sobel_edge, dither_threshold);
+                for (var i = 0; i < inputData.data.length; i += 4) {
+                    outputData.data[i] = inputData.data[i] & redMask;
+                    outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                    outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
+                    R_error = inputData.data[i] - outputData.data[i];
+                    G_error = inputData.data[i + 1] - outputData.data[i + 1];
+                    B_error = inputData.data[i + 2] - outputData.data[i + 2];
+                    // Diffuse error with edge_detected dithering
+                    pixel_index = i / 4;
+                    pixel_x = pixel_index % inputData.width;
+                    pixel_y = Math.floor(pixel_index / inputData.width);
+                    if (sobel_edge.data[i] == 255) {
+                        outputData.data[i]     = inputData.data[i] & redMask;
+                        outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                        outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
+
+                    }
+                    else{
+                        if (pixel_x < inputData.width - 1) {
+                            // diffuse to the right pixel
+                            inputData.data[i + 4]     += R_error * 7 / 16;
+                            inputData.data[i + 5]     += G_error * 7 / 16;
+                            inputData.data[i + 6]     += B_error * 7 / 16;
+                        }
+                        if (pixel_y < inputData.height - 1) {
+                            // diffuse to the bottom pixel
+                            inputData.data[i + inputData.width * 4]     += R_error * 5 / 16;
+                            inputData.data[i + inputData.width * 4 + 1] += G_error * 5 / 16;
+                            inputData.data[i + inputData.width * 4 + 2] += B_error * 5 / 16;
+                        }
+                        if (pixel_x > 0 && pixel_y < inputData.height - 1) {
+                            // diffuse to the bottom-left pixel
+                            inputData.data[i + inputData.width * 4 - 4]     += R_error * 3 / 16;
+                            inputData.data[i + inputData.width * 4 - 3]     += G_error * 3 / 16;
+                            inputData.data[i + inputData.width * 4 - 2]     += B_error * 3 / 16;
+                        }
+                        if (pixel_x < inputData.width - 1 && pixel_y < inputData.height - 1) {
+                            // diffuse to the bottom-right pixel
+                            inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 16;
+                            inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 16;
+                            inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 16;
+                        }
+                    }
+                }
+
+                
+            }
+        }
+
+
+        
     }
 
     /*
