@@ -232,7 +232,7 @@
             }
             else if (dither_method == "edge-directed") {
                 var sobel_edge = imageproc.createBuffer(inputData);
-                imageproc.sobelEdge(inputData, sobel_edge, dither_threshold);
+                imageproc.sobelEdge(inputData, sobel_edge, dither_threshold, true);
                 for (var i = 0; i < inputData.data.length; i += 4) {
                     outputData.data[i] = inputData.data[i] & redMask;
                     outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
@@ -245,12 +245,66 @@
                     pixel_x = pixel_index % inputData.width;
                     pixel_y = Math.floor(pixel_index / inputData.width);
                     if (sobel_edge.data[i] == 255) {
-                        outputData.data[i]     = inputData.data[i] & redMask;
-                        outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
-                        outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
+                        // The pixel is an edge pixel
+                        // Diffuse error with edge-directed dithering
 
+                        // Get angle within range [-180, 180]
+                        var angle = sobel_edge.data[i + 2];
+
+                        var direction = "none";
+                        if (angle >= -22.5 && angle < 22.5) {
+                            direction = "right";
+                        } else if (angle >= 22.5 && angle < 67.5) {
+                            direction = "down-right";
+                        } else if (angle >= 67.5 && angle < 112.5) {
+                            direction = "down";
+                        } else if (angle >= 112.5 && angle < 157.5) {
+                            direction = "down-left";
+                        }
+                        
+                        switch(direction) {
+                            case "right":
+                                if (pixel_x < inputData.width - 1) {
+                                    // diffuse to the right pixel
+                                    inputData.data[i + 4]     += R_error;
+                                    inputData.data[i + 5]     += G_error;
+                                    inputData.data[i + 6]     += B_error;
+                                }
+                                break;
+                            case "down-right":
+                                if (pixel_x < inputData.width - 1 && pixel_y < inputData.height - 1) {
+                                    // diffuse to the bottom-right pixel
+                                    inputData.data[i + inputData.width * 4 + 4]     += R_error;
+                                    inputData.data[i + inputData.width * 4 + 5]     += G_error;
+                                    inputData.data[i + inputData.width * 4 + 6]     += B_error;
+                                }
+                                break;
+                            case "down":
+                                if (pixel_y < inputData.height - 1) {
+                                    // diffuse to the bottom pixel
+                                    inputData.data[i + inputData.width * 4]     += R_error;
+                                    inputData.data[i + inputData.width * 4 + 1] += G_error;
+                                    inputData.data[i + inputData.width * 4 + 2] += B_error;
+                                }
+                                break;
+                            case "down-left":
+                                if (pixel_x > 0 && pixel_y < inputData.height - 1) {
+                                    // diffuse to the bottom-left pixel
+                                    inputData.data[i + inputData.width * 4 - 4]     += R_error;
+                                    inputData.data[i + inputData.width * 4 - 3]     += G_error;
+                                    inputData.data[i + inputData.width * 4 - 2]     += B_error;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        // outputData.data[i]     = inputData.data[i] & redMask;
+                        // outputData.data[i + 1] = inputData.data[i + 1] & greenMask;
+                        // outputData.data[i + 2] = inputData.data[i + 2] & blueMask;
                     }
                     else{
+                        // non-edge pixel
+                        // Diffuse error with Floyd-Steinberg dithering
                         if (pixel_x < inputData.width - 1) {
                             // diffuse to the right pixel
                             inputData.data[i + 4]     += R_error * 7 / 16;
@@ -277,13 +331,8 @@
                         }
                     }
                 }
-
-                
             }
         }
-
-
-        
     }
 
     /*

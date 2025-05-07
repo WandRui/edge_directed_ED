@@ -4,7 +4,7 @@
     /*
      * Apply sobel edge to the input data
      */
-    imageproc.sobelEdge = function(inputData, outputData, threshold) {
+    imageproc.sobelEdge = function(inputData, outputData, threshold, B_as_angle=false) {
         console.log("Applying Sobel edge detection...");
 
         /* Initialize the two edge kernel Gx and Gy */
@@ -33,14 +33,16 @@
                 for (var j = -1; j <= 1; j++) {
                     for (var i = -1; i <= 1; i++) {
                         var pixel = imageproc.getPixel(inputData, x + i, y + j);
-                        var value = (pixel.r + pixel.g + pixel.b) / 3;
+                        // Use luminance grayscale
+                        var value = 0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b;
 
                         pixelX += value * Gx[j + 1][i + 1];
                         pixelY += value * Gy[j + 1][i + 1];
                     }
                 }
-                // Calculate the gradient magnitude
+                // Calculate the gradient magnitude & angle
                 var magnitude = Math.hypot(pixelX, pixelY);
+                var angle = Math.atan2(pixelY, pixelX) * 180 / Math.PI;
                 // Apply the threshold
                 var i = (x + y * outputData.width) * 4
                 if (magnitude >= threshold) {
@@ -53,9 +55,10 @@
                     outputData.data[i + 2] = 0;
                 }
 
-                // outputData.data[i]     = inputData.data[i];
-                // outputData.data[i + 1] = inputData.data[i + 1];
-                // outputData.data[i + 2] = inputData.data[i + 2];
+                if (B_as_angle) {
+                    // Use B value to store the angle
+                    outputData.data[i + 2] = Math.round(angle);
+                }
             }
         }
     } 
