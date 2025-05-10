@@ -198,35 +198,41 @@
                     pixel_x = pixel_index % inputData.width;
                     pixel_y = Math.floor(pixel_index / inputData.width);
  
-                     if (pixel_x < inputData.width - 1) {
+                    if (pixel_x < inputData.width - 1) {
                          // diffuse to the right pixel
                          inputData.data[i + 4]     += R_error * 1 / 8;
                          inputData.data[i + 5]     += G_error * 1 / 8;
                          inputData.data[i + 6]     += B_error * 1 / 8;
-                     }
-                     if (pixel_x < inputData.width - 2) {
+                    }
+                    if (pixel_x < inputData.width - 2) {
                         // diffuse to the right-right pixel
                         inputData.data[i + 8]     += R_error * 1 / 8;
                         inputData.data[i + 9]     += G_error * 1 / 8;
                         inputData.data[i + 10]     += B_error * 1 / 8;
                     }
-                     if (pixel_y < inputData.height - 1) {
+                    if (pixel_y < inputData.height - 1) {
                          // diffuse to the bottom pixel
                          inputData.data[i + inputData.width * 4]     += R_error * 1 / 8;
                          inputData.data[i + inputData.width * 4 + 1] += G_error * 1 / 8;
                          inputData.data[i + inputData.width * 4 + 2] += B_error * 1 / 8;
-                     }
-                     if (pixel_x > 0 && pixel_y < inputData.height - 1) {
+                    }
+                    if (pixel_x > 0 && pixel_y < inputData.height - 1) {
                          // diffuse to the bottom-left pixel
                          inputData.data[i + inputData.width * 4 - 4]     += R_error * 1 / 8;
                          inputData.data[i + inputData.width * 4 - 3]     += G_error * 1 / 8;
                          inputData.data[i + inputData.width * 4 - 2]     += B_error * 1 / 8;
                      }
+                    if (pixel_x < inputData.width - 1 && pixel_y < inputData.height - 1) {
+                        // diffuse to the bottom-right pixel
+                        inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 8;
+                        inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 8;
+                        inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 8;
+                    }
                      if (pixel_y < inputData.height - 2) {
                          // diffuse to the bottom-bottom pixel
-                         inputData.data[i + inputData.width * 4 + 4]     += R_error * 1 / 8;
-                         inputData.data[i + inputData.width * 4 + 5]     += G_error * 1 / 8;
-                         inputData.data[i + inputData.width * 4 + 6]     += B_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 * 2]     += R_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 * 2 + 1]     += G_error * 1 / 8;
+                         inputData.data[i + inputData.width * 4 * 2 + 2]     += B_error * 1 / 8;
                      }
                 }
             }
