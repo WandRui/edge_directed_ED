@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="260" viewBox="0 0 1160 260">
+  <style>
+    .b{fill:#f8fbff;stroke:#1b5e9e;stroke-width:2;rx:12;ry:12}.t{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;fill:#123}.s{font-size:13px;fill:#345}.a{stroke:#e07a22;stroke-width:3;marker-end:url(#m)}
+  </style>
+  <defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e07a22"/></marker></defs>
+  <rect class="b" x="20" y="80" width="150" height="80"/><text class="t" x="45" y="112">Irradiance</text><text class="s" x="38" y="140">8:00-18:00 G(t)</text>
+  <line class="a" x1="170" y1="120" x2="210" y2="120"/>
+  <rect class="b" x="210" y="80" width="150" height="80"/><text class="t" x="238" y="112">STPV Window</text><text class="s" x="226" y="140">A·η·loss</text>
+  <line class="a" x1="360" y1="120" x2="400" y2="120"/>
+  <rect class="b" x="400" y="80" width="150" height="80"/><text class="t" x="418" y="112">MPPT &amp; Bus</text><text class="s" x="426" y="140">η=95%, 12 V</text>
+  <line class="a" x1="550" y1="120" x2="590" y2="120"/>
+  <rect class="b" x="590" y="80" width="150" height="80"/><text class="t" x="608" y="112">Hybrid Storage</text><text class="s" x="616" y="140">LiFePO4 + supercap</text>
+  <line class="a" x1="740" y1="120" x2="780" y2="120"/>
+  <rect class="b" x="780" y="80" width="150" height="80"/><text class="t" x="807" y="112">WPT Router</text><text class="s" x="804" y="140">η=70%, zones</text>
+  <line class="a" x1="930" y1="120" x2="970" y2="120"/>
+  <rect class="b" x="970" y="80" width="150" height="80"/><text class="t" x="996" y="112">Priority Loads</text><text class="s" x="991" y="140">A/B/C dispatch</text>
+  <text class="t" x="285" y="35">“窗能智链”Simulink等效仿真框图</text>
+</svg>
