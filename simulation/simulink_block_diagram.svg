@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" viewBox="0 0 1280 300">
+  <style>
+    .box{fill:#f8fbff;stroke:#1b5e9e;stroke-width:2;rx:12;ry:12}
+    .ctrl{fill:#fff8ed;stroke:#c96d16;stroke-width:2;rx:12;ry:12}
+    .title{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:22px;fill:#102a43;font-weight:600}
+    .text{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;fill:#102a43;font-weight:600}
+    .sub{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px;fill:#334e68}
+    .arrow{stroke:#e07a22;stroke-width:3;marker-end:url(#arrow)}
+    .feedback{stroke:#5c6f82;stroke-width:2;stroke-dasharray:6 5;marker-end:url(#fb)}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e07a22"/></marker>
+    <marker id="fb" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#5c6f82"/></marker>
+  </defs>
+  <text class="title" x="440" y="35">“窗能智链”系统流程图</text>
+
+  <rect class="box" x="20" y="85" width="165" height="86"/>
+  <text class="text" x="58" y="120">太阳辐照</text>
+  <text class="sub" x="45" y="148">8:00—18:00 G(t)</text>
+
+  <line class="arrow" x1="185" y1="128" x2="235" y2="128"/>
+  <rect class="box" x="235" y="85" width="165" height="86"/>
+  <text class="text" x="272" y="120">光伏窗</text>
+  <text class="sub" x="257" y="148">半透明发电玻璃</text>
+
+  <line class="arrow" x1="400" y1="128" x2="450" y2="128"/>
+  <rect class="box" x="450" y="85" width="165" height="86"/>
+  <text class="text" x="484" y="120">MPPT母线</text>
+  <text class="sub" x="474" y="148">η=95%，12/24 V</text>
+
+  <line class="arrow" x1="615" y1="128" x2="665" y2="128"/>
+  <rect class="box" x="665" y="85" width="165" height="86"/>
+  <text class="text" x="700" y="120">混合储能</text>
+  <text class="sub" x="691" y="148">锂电池+超级电容</text>
+
+  <line class="arrow" x1="830" y1="128" x2="880" y2="128"/>
+  <rect class="box" x="880" y="85" width="165" height="86"/>
+  <text class="text" x="910" y="120">无线能量路由</text>
+  <text class="sub" x="910" y="148">多线圈分区供电</text>
+
+  <line class="arrow" x1="1045" y1="128" x2="1095" y2="128"/>
+  <rect class="box" x="1095" y="85" width="165" height="86"/>
+  <text class="text" x="1133" y="120">分级负荷</text>
+  <text class="sub" x="1121" y="148">A/B/C优先调度</text>
+
+  <rect class="ctrl" x="520" y="220" width="270" height="58"/>
+  <text class="text" x="568" y="246">智能控制器</text>
+  <text class="sub" x="550" y="268">采集SOC/光照/负荷状态</text>
+
+  <line class="feedback" x1="1160" y1="171" x2="1160" y2="248"/>
+  <line class="feedback" x1="1160" y1="248" x2="790" y2="248"/>
+  <line class="feedback" x1="655" y1="220" x2="655" y2="185"/>
+  <line class="feedback" x1="655" y1="185" x2="962" y2="185"/>
+  <line class="feedback" x1="962" y1="185" x2="962" y2="171"/>
+</svg>
